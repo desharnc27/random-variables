@@ -6,6 +6,7 @@
 package randvar;
 
 import exception.IPVE;
+import tools.Funcs;
 
 /**
  *
@@ -21,24 +22,28 @@ public class PigeSR extends RandomLaw{
         setKYes(kYes);
         setKNo(kNo);
     }
+    @Override
+    public String getName(){
+        return "PigeSR"+Funcs.paramStr(kYes,kNo,n);
+    }
     
     public final void setN(int i){
         n=i;
         if (n<1){
-            System.out.println(IPVE.positive("n", n));
+            throw(IPVE.positive("n", n));
         }
     }
     
     public final void setKYes(int i){
         kYes=i;
         if (n<1){
-            System.out.println(IPVE.positive("kYes", kYes));
+            throw(IPVE.positive("kYes", kYes));
         }
     }
     public final void setKNo(int i){
         kNo=i;
         if (n<1){
-            System.out.println(IPVE.positive("kNo", kNo));
+            throw(IPVE.positive("kNo", kNo));
         }
     }
 

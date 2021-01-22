@@ -6,6 +6,7 @@
 package randvar;
 
 import exception.IPVE;
+import tools.Funcs;
 
 
 
@@ -32,9 +33,13 @@ public class DiceProduct extends RandomLaw {
         setNbFaces(nFaces);
         setNbDices(nDices);
     }
+    @Override
+    public String getName(){
+        return "DiceProduct"+Funcs.paramStr(nFaces,nDices);
+    }
     public final void setNbDices(int i){
-        nFaces=i;
-        if (nFaces<1){
+        nDices=i;
+        if (nDices<1){
             throw  (IPVE.positive("nDices", nDices));
         }
     }

@@ -6,6 +6,7 @@
 package randvar;
 
 import exception.IPVE;
+import tools.Funcs;
 import tools.Normal;
 
 /**
@@ -25,6 +26,10 @@ public class NormalDist extends RandomLaw {
     public NormalDist(double mean, double sd) {
         setMean(mean);
         setSD(sd);
+    }
+    @Override
+    public String getName(){
+        return "Normal"+Funcs.paramStr(mean,sd*sd);
     }
 
     @Override

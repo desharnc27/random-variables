@@ -12,11 +12,15 @@ package randvar;
 
 
 public abstract class RandomLaw {
+    /*public final String NAME;
     
-    
+    public RandomLaw(String name){
+        this.NAME=name;
+    }*/
+    public abstract String getName();
     public abstract double randomExec();
-    
     public abstract AnalyticSummary analyticEval();
+   
     
     public double [] getSample(int num){
         double [] sample=new double[num];

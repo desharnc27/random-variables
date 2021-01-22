@@ -13,15 +13,15 @@ package tools;
 //TODO: bring to myTools
 
 public class Normal {
-    private static double  epsilon = 1.0/(2<<28);
-    private static double bigEpsilon = Math.sqrt(epsilon);
+    public final static double  epsilon = 1.0/(2<<28);
+    public final static double bigEpsilon = Math.sqrt(epsilon);
     
     /**
      * Computes P(x>X), where X follows normal standard distribution 
      * @param x
      * @return P(x>X), where X follows normal standard distribution
      */
-    public static double normalRep(double x) {
+    public static double cumulativeProb(double x) {
         
         //Method: Computes the MacLaurin serie of  the integral of the standard normal density.
         //Stops when accuracy is sufficient.
@@ -52,7 +52,7 @@ public class Normal {
      * @param alpha
      * @return z
      */
-    public static double zOf2(double alpha) {
+    public static double endPoint2(double alpha) {
         
         //Method: approximative binary search
         double zDown = -4;
@@ -63,8 +63,7 @@ public class Normal {
         double alphaMid = 0.5;
         while (alphaUp - alphaDown > bigEpsilon) {
             zMid = (zDown + zUp) / 2;
-            System.out.println(zMid);
-            alphaMid = normalRep(zMid);
+            alphaMid = cumulativeProb(zMid);
             if (alpha > alphaMid) {
                 zDown = zMid;
                 alphaDown = alphaMid;
@@ -80,30 +79,39 @@ public class Normal {
      * @param alpha
      * @return z
      */
-    public static double zOf(double alpha) {
+    public static double endPoint(double alpha) {
         
         //Method: Newton convergence
         
         double coeff = Math.sqrt(1 / (2 * Math.PI));
-        double x = 0;
-        double nextX = x;
+        double x;
+        double nextX = 0;
         do{
             x = nextX;
             double denom =coeff * Math.exp(-x*x/2);
-            nextX = x - (normalRep(x)-alpha)/denom;
-            System.out.println(nextX);
+            nextX = x - (cumulativeProb(x)-alpha)/denom;
         }while(Math.abs(nextX-x)>bigEpsilon);
         return nextX;
     }
 
     public static double randNormal() {
         double ran = Math.random();
-        return zOf(ran);
+        return endPoint(ran);
     }
 
     public static void main(String[] args) {
         double alpha=Math.random();
-        System.out.println("ans0: "+zOf2(alpha));
-        System.out.println("ans1: "+zOf(alpha));
+        System.out.println("alpha: "+alpha);
+        double ansBin = endPoint2(alpha);
+        double ansNewt = endPoint(alpha);
+        System.out.println("ansBin: "+ansBin);
+        System.out.println("ansNewt: "+ansNewt);
+        
+        double inBin = cumulativeProb(ansBin);
+        double inNewt = cumulativeProb(ansNewt);
+        
+        System.out.println("inBin: "+inBin);
+        System.out.println("inNewt: "+inNewt);
+        
     }
 }

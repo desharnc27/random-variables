@@ -6,6 +6,7 @@
 package randvar;
 
 import exception.IPVE;
+import tools.Funcs;
 
 /**
  *
@@ -17,6 +18,10 @@ public class Khi2 extends RandomLaw {
 
     public Khi2(int v) {
         setV(v);
+    }
+    @Override
+    public String getName(){
+        return "KhiSquare"+Funcs.paramStr(v);
     }
 
     public void setV(int v) {

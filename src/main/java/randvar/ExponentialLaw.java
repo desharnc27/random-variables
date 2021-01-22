@@ -6,6 +6,7 @@
 package randvar;
 
 import exception.IPVE;
+import tools.Funcs;
 
 /**
  *
@@ -17,6 +18,10 @@ public class ExponentialLaw extends RandomLaw {
 
     public ExponentialLaw(double lambda) {
         setLambda(lambda);
+    }
+    @Override
+    public String getName(){
+        return "Exponential"+Funcs.paramStr(lambda);
     }
 
     public final void setLambda(double lambda) {

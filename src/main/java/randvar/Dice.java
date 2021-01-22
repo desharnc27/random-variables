@@ -6,6 +6,7 @@
 package randvar;
 
 import exception.IPVE;
+import tools.Funcs;
 
 /**
  *
@@ -22,8 +23,12 @@ public class Dice extends RandomLaw {
         this(6);
     }
     public Dice( int nbFaces){
-        
         setNbFaces(nbFaces);
+        
+    }
+    @Override
+    public String getName(){
+        return "Dice"+Funcs.paramStr(nFaces);
     }
     public final void setNbFaces(int i){
         nFaces=i;

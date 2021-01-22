@@ -5,13 +5,14 @@
  */
 package test;
 
+import exception.NIFE;
 import multirandvar.FullCrescendo;
 import randvar.ExponentialLaw;
-import randvar.BinomNeg;
-import randvar.BinomNeg;
+import randvar.Binomial;
+import randvar.Binomial;
 import randvar.Crescendo;
-import randvar.Dice;
-import randvar.Poisson;
+import randvar.Binomial;
+import randvar.Binomial;
 
 /**
  *
@@ -19,8 +20,14 @@ import randvar.Poisson;
  */
 public class Test {
     public static void main(String [] args){
-        Dice el=new Dice(-1);
+        Binomial el=new Binomial(5,0.7);
         el.compareAnalyticToSample(10000);
+        System.out.println(el.getName());
+        try{
+            throw NIFE.cumulative();
+        }catch (NIFE ex ){
+            System.out.println("caught: "+ex);
+        }
     }
     
 }

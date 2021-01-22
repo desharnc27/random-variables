@@ -5,12 +5,16 @@
  */
 package randvar;
 
+import tools.Funcs;
+
 /**
  *
  * @author desha
  */
 public class Crescendo extends RandomLaw {
-
+    public String getName(){
+        return "Crescendo"+Funcs.paramStr();
+    }
     @Override
     public double randomExec() {
         double count = 0;

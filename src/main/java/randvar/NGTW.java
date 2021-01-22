@@ -6,6 +6,7 @@
 package randvar;
 
 import exception.IPVE;
+import tools.Funcs;
 import tools.Pascal;
 
 /**
@@ -37,6 +38,10 @@ public class NGTW extends RandomLaw {
         setP1(p1);
         setN(n);
         
+    }
+    @Override
+    public String getName(){
+        return "NGTW"+Funcs.paramStr(p0,p1,n);
     }
     public void checkDraw(){
         if (p0+p1>1){

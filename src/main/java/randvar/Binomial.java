@@ -12,45 +12,45 @@ import tools.Funcs;
  *
  * @author desha
  */
-public class BinomNeg extends RandomLaw {
+public class Binomial extends RandomLaw {
 
     private double p;
     private int n;
 
-    public BinomNeg( int n, double p ) {
+    public Binomial(int n,double p) {
         setProb(p);
         setN(n);
     }
     @Override
     public String getName(){
-        return "NegativeBinomial"+Funcs.paramStr(n,p);
+        return "Binomial"+Funcs.paramStr(n,p);
     }
-    public final void setProb(double p){
-        this.p = p;
-        if (p<0 || p>1){
-            throw  (IPVE.proba("p",p));
-        }
-    }
-    public final void setN(int i){
-        n=i;
+    public final void setN(int n){
+        this.n=n;
         if (n<1){
-            throw  (IPVE.positive("n", n));
+            throw (IPVE.positive("n", n));
         }
     }
+    public final void setProb(double p) {
+        this.p = p;
+        if (p < 0 || p > 1) {
+            throw (IPVE.proba("p", p));
+        }
+    }
+
     @Override
     public double randomExec() {
-        double res =0;
-        Geometric gl = new Geometric(p);
+        Bernoulli b = new Bernoulli(p);
+        int res = 0;
         for (int i=0;i<n;i++)
-            res += gl.randomExec();
+            res += b.randomExec();
         return res;
     }
 
     @Override
     public AnalyticSummary analyticEval() {
-        double esp = n / p;
-        double vari = n* (1 - p) / (p * p);
+        double esp = p*n;
+        double vari = (1 - p)*esp;
         return AnalyticSummary.buildByVar(esp, vari);
     }
-
 }

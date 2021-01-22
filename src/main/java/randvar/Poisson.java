@@ -6,6 +6,7 @@
 package randvar;
 
 import exception.IPVE;
+import tools.Funcs;
 
 /**
  *
@@ -16,6 +17,10 @@ public class Poisson extends RandomLaw{
     
     public Poisson(double lambda){
         setLambda(lambda);
+    }
+    @Override
+    public String getName(){
+        return "Poisson"+Funcs.paramStr(lambda);
     }
     public final void setLambda(double lambda){
         this.lambda=lambda;
