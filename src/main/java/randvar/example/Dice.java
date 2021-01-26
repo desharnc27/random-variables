@@ -3,10 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package randvar;
+package randvar.example;
 
 import exception.IPVE;
+import randvar.AnalyticSummary;
+import randvar.NNIRandomLaw;
 import tools.Funcs;
+import static tools.Pascal.fact;
+import tools.Small;
 
 /**
  *
@@ -16,7 +20,7 @@ import tools.Funcs;
  * Every dice has nFaces faces, numbered from 1 to nFaces inclusively.
  * 
  */
-public class Dice extends RandomLaw {
+public class Dice extends NNIRandomLaw {
     private int nFaces=6;
     
     public Dice (){
@@ -52,6 +56,23 @@ public class Dice extends RandomLaw {
         double espX = (accX+0.0)/nFaces;
         double espX2 = (accX2+0.0)/nFaces;
         return new AnalyticSummary(espX,espX2);
+    }
+    
+    @Override
+    public double exactProb(int i){
+        
+        if (i<1 || i>nFaces)
+            return 0;
+        return 1/(double)nFaces;
+    }
+    @Override
+    public double cumulative(double d){
+        int i = (int)(d+Small.EPSILON);
+        if (i<1 )
+            return 0;
+        if (i>nFaces)
+            return 1;
+        return i/(double)nFaces;
     }
     
     

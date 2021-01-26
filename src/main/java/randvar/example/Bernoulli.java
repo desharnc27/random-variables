@@ -3,16 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package randvar;
+package randvar.example;
 
 import exception.IPVE;
+import randvar.AnalyticSummary;
+import randvar.NNIRandomLaw;
 import tools.Funcs;
+import tools.Small;
 
 /**
  *
  * @author desha
  */
-public class Bernoulli extends RandomLaw {
+public class Bernoulli extends NNIRandomLaw {
 
     private double p;
 
@@ -21,7 +24,7 @@ public class Bernoulli extends RandomLaw {
     }
     @Override
     public String getName(){
-        return "Geometric"+Funcs.paramStr(p);
+        return "Bernoulli"+Funcs.paramStr(p);
     }
 
     public final void setProb(double p) {
@@ -41,5 +44,24 @@ public class Bernoulli extends RandomLaw {
         double esp = p;
         double vari = (1 - p)*p;
         return AnalyticSummary.buildByVar(esp, vari);
+    }
+    
+    
+    @Override
+    public double cumulative(double d){
+        if (d>1)
+            return 1;
+        return super.cumulative(d);
+    }
+    @Override
+    public double exactProb(int i){
+        switch(i){
+            case 0:
+                return 1-p;
+            case 1: 
+                return p;
+            default:
+                return 0;
+        }
     }
 }

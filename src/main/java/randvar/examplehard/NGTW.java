@@ -3,9 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package randvar;
+package randvar.examplehard;
 
 import exception.IPVE;
+import randvar.AnalyticSummary;
+import randvar.NNIRandomLaw;
+import randvar.RandomLaw;
 import tools.Funcs;
 import tools.Pascal;
 
@@ -28,7 +31,7 @@ import tools.Pascal;
  * 
  * Example of execution (n=4): (W,D,W,L,D,D,L,L,W,D,L), player1 wins, X=11
  */
-public class NGTW extends RandomLaw {
+public class NGTW extends NNIRandomLaw {
     private double p0=0;
     private double p1=0;
     private int n;

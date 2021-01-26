@@ -3,16 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package randvar;
+package randvar.example;
 
 import exception.IPVE;
+import randvar.AnalyticSummary;
+import randvar.NNIRandomLaw;
 import tools.Funcs;
+import tools.Pascal;
+import tools.Small;
 
 /**
  *
  * @author desha
  */
-public class Poisson extends RandomLaw{
+public class Poisson extends NNIRandomLaw{
     private double lambda;
     
     public Poisson(double lambda){
@@ -44,6 +48,36 @@ public class Poisson extends RandomLaw{
     @Override
     public AnalyticSummary analyticEval() {
         return AnalyticSummary.buildByVar(lambda, lambda);
+    }
+    
+    //These 2 methods of calculation are slower than optimal but avoid overflow risk of calling a factorial
+    
+    @Override
+    public double cumulative(double d){
+        int i = (int)(d+Small.EPSILON);
+        if (i<0)
+            return 0;
+        double term= 1;
+        int act =1;
+        double sum =term;
+        while (act<=i){
+            term *= lambda/act;
+            sum +=term;
+            act++;
+        }
+        return sum*Math.exp(-lambda);
+    }
+    @Override
+    public double exactProb(int i){
+        if (i<0)
+            return 0;
+        double term= 1;
+        int act =1;
+        while (act<=i){
+            term *= lambda/act;
+            act++;
+        }
+        return term*Math.exp(-lambda);
     }
     
     

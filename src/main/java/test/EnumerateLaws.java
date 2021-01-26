@@ -6,21 +6,23 @@
 package test;
 
 import java.util.ArrayList;
-import randvar.Bernoulli;
-import randvar.BinomNeg;
-import randvar.Binomial;
-import randvar.Crescendo;
-import randvar.Dice;
-import randvar.DiceAppear;
-import randvar.DiceProduct;
-import randvar.ExponentialLaw;
-import randvar.Geometric;
-import randvar.Khi2;
-import randvar.NGTW;
-import randvar.NormalDist;
-import randvar.PigeSR;
-import randvar.Poisson;
+import randvar.NNIRandomLaw;
+import randvar.example.Bernoulli;
+import randvar.example.BinomNeg;
+import randvar.example.Binomial;
+import randvar.example.Crescendo;
+import randvar.example.Dice;
+import randvar.examplehard.DiceAppear;
+import randvar.examplehard.DiceProduct;
+import randvar.example.ExponentialLaw;
+import randvar.example.Geometric;
+import randvar.example.Khi2;
+import randvar.examplehard.NGTW;
+import randvar.example.NormalDist;
+import randvar.example.PigeSR;
+import randvar.example.Poisson;
 import randvar.RandomLaw;
+import tools.PriLev;
 
 /**
  *
@@ -58,10 +60,20 @@ public class EnumerateLaws {
         
     }
     public static void main (String [] args){
+        PriLev.setLevel(0, 2);
+        PriLev.setLevel(1, 2);
+        PriLev.setLevel(2, 2);
+        double [] ends  = new double []{0,1,3,5,7,10,15,23,47};
         ArrayList<RandomLaw> lawList =lawList();
         for (int i=0;i<lawList.size();i++){
             RandomLaw rl = lawList.get(i);
-            System.out.println(rl.getName());
+            //System.out.println(rl.getName());
+            if (rl instanceof NNIRandomLaw){
+                NNIRandomLaw irl =(NNIRandomLaw)rl;
+                System.out.println(irl+"_excumu: "+irl.verifyCumulativeVsExact());
+                System.out.println(irl+"_exmean: "+irl.verifyStatSummaryVsExact());
+                System.out.println(irl+"_exyoyo: "+irl.compareAnalyticCumulativeToSample(ends,10000,0.02));
+            }
         }
     }
 }

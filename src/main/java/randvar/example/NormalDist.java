@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package randvar;
+package randvar.example;
 
 import exception.IPVE;
+import randvar.AnalyticSummary;
+import randvar.RandomLaw;
 import tools.Funcs;
 import tools.Normal;
 
@@ -43,15 +45,23 @@ public class NormalDist extends RandomLaw {
         return AnalyticSummary.buildByVar(mean, sd * sd);
     }
 
-    public void setMean(double mean) {
+    public final void setMean(double mean) {
         this.mean = mean;
     }
 
-    public void setSD(double sd) {
+    public final void setSD(double sd) {
         this.sd = sd;
         if (sd <= 0) {
             throw IPVE.positive("sd", sd);
         }
     }
+    
+    @Override
+    public double cumulative(double d) {
+        double z = (d-mean)/sd;
+        return Normal.cumulativeProb(z);
+    }
+    
+    
 
 }

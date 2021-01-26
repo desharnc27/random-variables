@@ -3,10 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package randvar;
+package randvar.example;
 
 import exception.IPVE;
+import randvar.AnalyticSummary;
+import randvar.RandomLaw;
 import tools.Funcs;
+import tools.Small;
 
 /**
  *
@@ -40,6 +43,12 @@ public class ExponentialLaw extends RandomLaw {
     @Override
     public AnalyticSummary analyticEval() {
         return new AnalyticSummary(1 / lambda, 2 / (lambda * lambda));
+    }
+    @Override
+    public double cumulative(double d){
+        if (d<0)
+            return 0;
+        return 1-Math.exp(-lambda*d);
     }
 
 }

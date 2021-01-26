@@ -19,7 +19,6 @@ public class AnalyticSummary {
         this.estMeanSq=estMeanSq;
         
     }
-    //TODO:change name (-pop)
     public double getVar(){
         return estMeanSq - estMean*estMean;
     }

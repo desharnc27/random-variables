@@ -3,16 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package randvar;
+package randvar.example;
 
 import exception.IPVE;
+import randvar.AnalyticSummary;
+import randvar.NNIRandomLaw;
 import tools.Funcs;
+import tools.Pascal;
 
 /**
  *
  * @author desha
  */
-public class BinomNeg extends RandomLaw {
+public class BinomNeg extends NNIRandomLaw {
 
     private double p;
     private int n;
@@ -51,6 +54,15 @@ public class BinomNeg extends RandomLaw {
         double esp = n / p;
         double vari = n* (1 - p) / (p * p);
         return AnalyticSummary.buildByVar(esp, vari);
+    }
+    
+    @Override
+    public double exactProb(int i){
+        if (i<n)
+            return 0;
+        double res = Math.pow(p,n)*Math.pow(1-p,i-n);
+        res *= Pascal.get(i-1,n-1);
+        return res;
     }
 
 }

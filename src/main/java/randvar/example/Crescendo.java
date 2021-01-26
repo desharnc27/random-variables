@@ -3,15 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package randvar;
+package randvar.example;
 
+import randvar.AnalyticSummary;
+import randvar.NNIRandomLaw;
 import tools.Funcs;
+import tools.Pascal;
+import tools.Small;
 
 /**
  *
  * @author desha
  */
-public class Crescendo extends RandomLaw {
+public class Crescendo extends NNIRandomLaw {
+    @Override
     public String getName(){
         return "Crescendo"+Funcs.paramStr();
     }
@@ -32,6 +37,22 @@ public class Crescendo extends RandomLaw {
     public AnalyticSummary analyticEval() {
         double e =Math.E;
         return new AnalyticSummary(e,3*e);
+    }
+    
+    @Override
+    public double exactProb(int i){
+        if (i<2)
+            return 0;
+        double res = (i-1)/(double)Pascal.doubleFact(i);
+        return res;
+    }
+    @Override
+    public double cumulative(double d){
+        int i = (int)(d+Small.EPSILON);
+        if (i<2)
+            return 0;
+        double res = 1-1/(double)Pascal.doubleFact(i);
+        return res;
     }
 
 }

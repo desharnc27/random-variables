@@ -13,8 +13,7 @@ package tools;
 //TODO: bring to myTools
 
 public class Normal {
-    public final static double  epsilon = 1.0/(2<<28);
-    public final static double bigEpsilon = Math.sqrt(epsilon);
+    
     
     /**
      * Computes P(x>X), where X follows normal standard distribution 
@@ -26,7 +25,7 @@ public class Normal {
         //Method: Computes the MacLaurin serie of  the integral of the standard normal density.
         //Stops when accuracy is sufficient.
         
-        double toler = epsilon;
+        double toler = Small.EPSILON;
         double val = 0;
 
         double bobo = -x * x / 2;
@@ -61,7 +60,7 @@ public class Normal {
         double alphaUp = 1;
         double zMid = 0;
         double alphaMid = 0.5;
-        while (alphaUp - alphaDown > bigEpsilon) {
+        while (alphaUp - alphaDown > Small.BIG_EPSILON) {
             zMid = (zDown + zUp) / 2;
             alphaMid = cumulativeProb(zMid);
             if (alpha > alphaMid) {
@@ -90,7 +89,7 @@ public class Normal {
             x = nextX;
             double denom =coeff * Math.exp(-x*x/2);
             nextX = x - (cumulativeProb(x)-alpha)/denom;
-        }while(Math.abs(nextX-x)>bigEpsilon);
+        }while(Math.abs(nextX-x)>Small.BIG_EPSILON);
         return nextX;
     }
 

@@ -3,16 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package randvar;
+package randvar.example;
 
 import exception.IPVE;
+import randvar.AnalyticSummary;
+import randvar.NNIRandomLaw;
 import tools.Funcs;
+import static tools.Pascal.fact;
+import tools.Small;
 
 /**
  *
  * @author desha
  */
-public class Geometric extends RandomLaw {
+public class Geometric extends NNIRandomLaw {
 
     private double p;
 
@@ -45,6 +49,19 @@ public class Geometric extends RandomLaw {
     @Override
     public String getName(){
         return "Geometric"+Funcs.paramStr(p);
+    }
+    @Override
+    public double exactProb(int i){
+        if (i<1)
+            return 0;
+        return Math.pow(1-p,i-1)*p;
+    }
+    @Override
+    public double cumulative(double d){
+        int i = (int)(d+Small.EPSILON);
+        if (i<1)
+            return 0;
+        return 1-Math.pow(1-p,i);
     }
 
 }

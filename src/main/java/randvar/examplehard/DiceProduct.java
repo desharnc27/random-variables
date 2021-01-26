@@ -3,9 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package randvar;
+package randvar.examplehard;
 
 import exception.IPVE;
+import randvar.AnalyticSummary;
+import randvar.NNIRandomLaw;
+import randvar.RandomLaw;
 import tools.Funcs;
 
 
@@ -22,7 +25,7 @@ import tools.Funcs;
  * 
  * Example (nDices=4,nFaces=7): throw 4 dice, get (5,1,7,2), therefore X = 1*2*5*7 = 70
  */
-public class DiceProduct extends RandomLaw {
+public class DiceProduct extends NNIRandomLaw {
     private int nFaces;
     private int nDices;
     

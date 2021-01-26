@@ -89,7 +89,7 @@ public class Funcs {
     }*/
     public static String purify(double d) {
         int a = (int) Math.round(d);
-        if (Math.abs(d - a) < Normal.epsilon) {
+        if (Math.abs(d - a) < Small.EPSILON) {
             return String.valueOf(a);
         }
         String res = String.valueOf(d);
