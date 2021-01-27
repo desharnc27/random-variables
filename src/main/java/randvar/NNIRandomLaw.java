@@ -51,12 +51,13 @@ public abstract class NNIRandomLaw extends RandomLaw {
         // There is an unsafety in this method since it does not know when to stop looking for possible values of the random variable.
         // It stops if from some i to 2i+10 there is nothing found, which, for some distribution, would be completely faulty.
         try {
+            int TODELEcheck=0;
             AnalyticSummary analSmry = this.analyticEval();
             int lastSignificant=0;
             double qwe = 1;
             double esp_X = 0;
             double esp_X2 = 0;
-            for (int i = 0; i<2*lastSignificant+10 && Small.leqThan(esp_X,analSmry.estMean) && Small.leqThan(esp_X2,analSmry.estMeanSq); i++) {
+            for (int i = 0; i<2*lastSignificant+10 ; i++) {
                 try{
                     qwe = this.exactProb(i);
                 }catch(ArithmeticException ae){
@@ -69,9 +70,9 @@ public abstract class NNIRandomLaw extends RandomLaw {
                     esp_X += i * qwe;
                     esp_X2 += i * i * qwe;
                 }
-
+                TODELEcheck = i;
             }
-            if (esp_X>analSmry.estMean && esp_X2> analSmry.estMeanSq)
+            if (!(Small.leqThan(esp_X,analSmry.estMean) && Small.leqThan(esp_X2,analSmry.estMeanSq)))
                 PriLev.println(1,1,"busted!");
             if (Small.ishEq(esp_X, analSmry.estMean) && Small.ishEq(esp_X2, analSmry.estMeanSq)) {
                 return true;

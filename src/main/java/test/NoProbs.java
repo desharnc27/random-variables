@@ -7,23 +7,39 @@ package test;
 
 import tools.Pascal;
 
+import tools.Normal;
+
 /**
  *
  * @author desha
  */
 public class NoProbs {
-    public static void main(String [] args){
-        int n=300;
+    public static void main0(){
+        //int n=300;
         //System.out.println(Pascal.doubleFact(n));
+        int [][] combs=new int[][]{
+            {56,22},
+            {74,22},
+            {5,3},
+            {16233,3},
+            {16233,15},
+        };
         try{
-            System.out.println(Pascal.get(56,22));
-            System.out.println(Pascal.get(74,22));
-            System.out.println(Pascal.get(5,3));
-            System.out.println(Pascal.get(2040,5));
+            for (int [] arr: combs){
+                int n = arr[0];
+                int k = arr[1];
+               System.out.println("C("+n+","+k+")= "+Pascal.get(n,k)); 
+            }
             //System.out.println(Pascal.get(16672,4));
         }catch(ArithmeticException e){
             throw e;
         }
         
+    }
+    public static void main1(){
+        System.out.println(Normal.cumulativeProb(-4));
+    }
+    public static void main(String [] args){
+        main1();
     }
 }

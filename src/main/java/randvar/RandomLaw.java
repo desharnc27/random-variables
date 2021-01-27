@@ -8,6 +8,8 @@ package randvar;
 import randvar.examplehard.DiceAppear;
 import exception.NIFE;
 import java.util.Arrays;
+import randvar.example.Binomial;
+import randvar.example.PigeSR;
 import tools.Normal;
 import tools.Small;
 import tools.PriLev;
@@ -158,11 +160,21 @@ public abstract class RandomLaw {
             PriLev.println(2,1,"Precisely identical value ("+analEsp+"), vraisemblance: 1.0");
             return 1.0;
         }
+        Binomial bin = new Binomial(sampleSize,analEsp);
+        
+        double binCumulative = bin.cumulative(inferCount);
+        double binFurtherFromAverage = (binCumulative < 0.5) ? binCumulative : 1 - binCumulative;
+        PriLev.println(0,2,sampleProp + " vs " + analEsp + ", " + "vraisemblance: " + binFurtherFromAverage);
+        
+        
         double coteZ = (sampleProp - analEsp) * Math.sqrt(sampleSize) / Math.sqrt(analVar);
         double normalCumulative = Normal.cumulativeProb(coteZ);
         double normalFurtherFromAverage = (normalCumulative < 0.5) ? normalCumulative : 1 - normalCumulative;
+        
         PriLev.println(2,1,sampleProp + " vs " + analEsp + ", " + "vraisemblance: " + normalFurtherFromAverage);
-        return normalFurtherFromAverage;
+        
+        return binFurtherFromAverage;
+        //return normalFurtherFromAverage;
 
     }
 

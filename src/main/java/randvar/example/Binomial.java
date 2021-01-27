@@ -6,17 +6,21 @@
 package randvar.example;
 
 import exception.IPVE;
+import exception.TLVE;
 import randvar.AnalyticSummary;
 import randvar.NNIRandomLaw;
 import tools.Funcs;
 import tools.Pascal;
+import tools.PriLev;
+import tools.Small;
 
 /**
  *
  * @author desha
  */
 public class Binomial extends NNIRandomLaw {
-
+    //private final static double NORMAL_THRESHOLD = 10;
+    private final static double POISSON_THRESHOLD = 5;
     private double p;
     private int n;
 
@@ -59,9 +63,68 @@ public class Binomial extends NNIRandomLaw {
     
     @Override
     public double cumulative(double d){
+        
         if (d>n)
             return 1;
-        return super.cumulative(d);
+        try{
+            Pascal.get(n, n / 2);
+            //No TLV exception thrown -> Exact Computation will work
+            PriLev.println(0,4,"Binomial cumulative() used exact");
+            return super.cumulative(d);
+        } catch (TLVE ex) {
+        }
+
+        int i = (int) (d + Small.EPSILON);
+
+        /*try {
+            Pascal.get(n, i);
+            //No TLV exception thrown -> Exact Computation will work
+            if (2 * i <= n) {
+                PriLev.println(0,4,"Binomial cumulative() kinda used exact");
+                return super.cumulative(d);
+            }
+            //Here since i is closer from n than from 0, to avoid TLVE,
+            //we must calculate 1-P(X>d) instead of P(X<=d)
+            double antires = 0;
+            for (int j = n; j > i; j--) {
+                
+                antires += this.exactProb(j);
+            }
+            PriLev.println(0,4,"Binomial cumulative() used exact (reverse calcs)");
+            return 1 - antires;
+        } catch (TLVE ex) {
+        }*/
+
+
+        
+        if (n*p<Binomial.POISSON_THRESHOLD){
+            PriLev.println(0,4,"Binomial cumulative() used Poisson");
+            Poisson pd = new Poisson(n*p);
+            return pd.cumulative(d);
+        }
+        if (n*(1-p)<Binomial.POISSON_THRESHOLD){
+            PriLev.println(0,4,"Binomial cumulative() used Poisson (reverse calcs)");
+            Poisson pd = new Poisson(n*(1-p));
+            return 1-pd.cumulative(n-d);
+            //PoissonFlip pld = new PoissonFlip(n*p,n);
+            //return pld.cumulative(d);
+        }
+        
+        /*if (n*p>Binomial.NORMAL_THRESHOLD && n*(1-p)>Binomial.NORMAL_THRESHOLD){
+            //Normal approximation will be ok
+            NormalDist nd = NormalDist.buildByVar(n*p,n*(1-p));
+            return nd.cumulative(i+0.5);
+        }*/
+        
+        //No choice, normal approximation is the only way
+        PriLev.println(0,4,"Binomial cumulative() used NormalDist");
+        NormalDist nd = NormalDist.buildByVar(n*p,n*p*(1-p));
+        return nd.cumulative(i);
+ 
+            
+        
+
+ 
     }
     @Override
     public double exactProb(int i){

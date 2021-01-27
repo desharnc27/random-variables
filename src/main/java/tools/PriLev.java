@@ -22,7 +22,7 @@ public class PriLev {
     3: automatic adjustements
     
     */
-    private final static int[] levels = new int[5];
+    private final static int[] levels = new int[]{5,2,2,0,0};
 
     public static void print(int category, int level, String message) {
         if (levels[category] >= level) {

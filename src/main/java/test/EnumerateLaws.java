@@ -49,7 +49,6 @@ public class EnumerateLaws {
         list.add(new ExponentialLaw(lambda));
         list.add(new Geometric(p));
         list.add(new Khi2(14));
-        list.add(new DiceAppear(n,nFaces));
         list.add(new NGTW(p,p1,n));
         list.add(new NormalDist(4,4));
         list.add(new PigeSR(7,10,11));
@@ -60,10 +59,11 @@ public class EnumerateLaws {
         
     }
     public static void main (String [] args){
-        PriLev.setLevel(0, 2);
+        PriLev.setLevel(0, 3);
         PriLev.setLevel(1, 2);
         PriLev.setLevel(2, 2);
-        double [] ends  = new double []{0,1,3,5,7,10,15,23,47};
+        //double [] ends  = new double []{0,1,3,5,7,10,15,23,47};
+        double [] ends  = new double []{3};
         ArrayList<RandomLaw> lawList =lawList();
         for (int i=0;i<lawList.size();i++){
             RandomLaw rl = lawList.get(i);
@@ -72,7 +72,7 @@ public class EnumerateLaws {
                 NNIRandomLaw irl =(NNIRandomLaw)rl;
                 System.out.println(irl+"_excumu: "+irl.verifyCumulativeVsExact());
                 System.out.println(irl+"_exmean: "+irl.verifyStatSummaryVsExact());
-                System.out.println(irl+"_exyoyo: "+irl.compareAnalyticCumulativeToSample(ends,10000,0.02));
+                System.out.println(irl+"_exyoyo: "+irl.compareAnalyticCumulativeToSample(ends,50,0.02));
             }
         }
     }

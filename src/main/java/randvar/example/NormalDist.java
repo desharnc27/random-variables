@@ -29,15 +29,20 @@ public class NormalDist extends RandomLaw {
         setMean(mean);
         setSD(sd);
     }
+
+    public static NormalDist buildByVar(double mean, double vari) {
+        return new NormalDist(mean, Math.sqrt(vari));
+    }
+
     @Override
-    public String getName(){
-        return "Normal"+Funcs.paramStr(mean,sd*sd);
+    public String getName() {
+        return "Normal" + Funcs.paramStr(mean, sd * sd);
     }
 
     @Override
     public double randomExec() {
         double z = Normal.randNormal();
-        return (z + mean) * sd;
+        return z * sd + mean;
     }
 
     @Override
@@ -55,13 +60,11 @@ public class NormalDist extends RandomLaw {
             throw IPVE.positive("sd", sd);
         }
     }
-    
+
     @Override
     public double cumulative(double d) {
-        double z = (d-mean)/sd;
+        double z = (d - mean) / sd;
         return Normal.cumulativeProb(z);
     }
-    
-    
 
 }
