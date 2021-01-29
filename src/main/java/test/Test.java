@@ -8,7 +8,7 @@ package test;
 import exception.NIFE;
 import multirandvar.FullCrescendo;
 import randvar.example.Binomial;
-import randvar.example.NormalDist;
+import randvar.example.Geometric;
 
 import randvar.example.Crescendo;
 
@@ -43,11 +43,11 @@ public class Test {
     
     
     public static void main1(){
-        NormalDist el=new NormalDist();
+        Geometric el=new Geometric(0.25);
         //el.compareAnalyticToSample(10000);
         System.out.println(el.getName());
         //double [] ends = new double []{1,4,6,7,8.1,15.3,19.5,20,20.5,25,28.8,34,37,44,53,70}; 
-        double [] ends = new double []{-4}; 
+        double [] ends = new double []{6}; 
         
         System.out.println(el.compareAnalyticCumulativeToSample(ends,10000,0.02));
     }

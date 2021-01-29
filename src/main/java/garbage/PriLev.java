@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package tools;
+package garbage;
 
 /**
  * This class is
@@ -22,7 +22,7 @@ public class PriLev {
     3: automatic adjustements
     
     */
-    private final static int[] levels = new int[]{5,2,2,0,0};
+    private final static int[] levels = new int[]{0,0,0,0,0};
 
     public static void print(int category, int level, String message) {
         if (levels[category] >= level) {

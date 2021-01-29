@@ -9,10 +9,8 @@ import randvar.examplehard.DiceAppear;
 import exception.NIFE;
 import java.util.Arrays;
 import randvar.example.Binomial;
-import randvar.example.PigeSR;
 import tools.Normal;
 import tools.Small;
-import tools.PriLev;
 
 /**
  *
@@ -44,7 +42,7 @@ public abstract class RandomLaw {
     public final SampleStatSummary makeRandSampleStats(int sampleSize) {
         if (sampleSize < 5) {
 
-            PriLev.println(2,1,"I don't manage sample of size less than 5, so i'll increase the smaple Size to 5.");
+            System.out.println("Note(autoAdjust):sampleSize raised to 5 because less is not supported.");
             sampleSize = 5;
         }
 
@@ -98,14 +96,14 @@ public abstract class RandomLaw {
         double estVarAnal = skAnal.getVar();
 
         //double coteZ = (skRand.estMean-skAnal.estMean)*Math.sqrt(sampleSize/estVarRand);
-        PriLev.println(1,1,"skRand.estMean: " + skRand.espX(1));
-        PriLev.println(1,1,"estVarRand: " + estVarRand);
-        PriLev.println(1,1,"skAnal.estMean: " + skAnal.estMean);
-        PriLev.println(1,1,"estVarAnal: " + estVarAnal);
-        PriLev.println(1,1,"zeeValue(): " + zeeValue(skAnal, skRand));
-        PriLev.println(1,1,"chuckValue(): " + chuckValue(skAnal, skRand));
-        PriLev.println(1,1,"zeeValue(): " + zeeValue(skAnal, skRand));
-        PriLev.println(1,1,"WololoValue(): " + wololoValue(skAnal, skRand));
+        Prints.summaryValuesLn(2,"skRand.estMean: " + skRand.espX(1));
+        Prints.summaryValuesLn(2,"estVarRand: " + estVarRand);
+        Prints.summaryValuesLn(2,"skAnal.estMean: " + skAnal.estMean);
+        Prints.summaryValuesLn(2,"estVarAnal: " + estVarAnal);
+        Prints.summaryValuesLn(2,"zeeValue(): " + zeeValue(skAnal, skRand));
+        Prints.summaryValuesLn(2,"chuckValue(): " + chuckValue(skAnal, skRand));
+        Prints.summaryValuesLn(2,"zeeValue(): " + zeeValue(skAnal, skRand));
+        Prints.summaryValuesLn(2,"WololoValue(): " + wololoValue(skAnal, skRand));
 
     }
     
@@ -118,20 +116,44 @@ public abstract class RandomLaw {
         //double targetProbOfOneEnd = 1 - Math.pow(1 - TARGET_PROB, 1 / (double) ends.length);
         
         //Division by 2 since final result on both edges are 
-        double targetProbOfOneEnd = probType2Err/2;
+        double targetProbOfOneEnd = probType2Err / 2;
         for (double end : ends) {
             try {
+                Prints.cumulHypo(3, "A hypothesis test will be performed to determine if the anaytic implementation");
+                Prints.cumulHypoLn(3, "of cumulative(end) matches a random sample for end= " + end + ". ");
+                Prints.cumulHypoLn(3, "H_0: both cumulative and randomExec functions are well implemented.");
+                Prints.cumulHypoLn(3, "H_1: Either cumulative or randomExec is not well implemented.");
+                
+                Prints.cumulHypoLn(3, "Sample of X distribution denoted as {X_1,X_2...X_n}");
+                Prints.cumulHypoLn(3, "Define Y_i = 1 if X_i<end, 0 otherwise ");
+                Prints.cumulHypo(3, "Assuming H_0, S=sum[i=1..n] Y_i should have a distribution Binomial(n,p) ");
+                Prints.cumulHypoLn(3, " where p = P(X<end)");
+                
+                Prints.cumulHypoLn(3, "As asked, the probabiliy of falsly rejecting null hypothesis must be "+probType2Err);
+                Prints.cumulHypoLn(3, "Therefore we will reject H_0 if S<c_1 or S>c_2 , where c_1 and c_2 are defined such that: ");
+                Prints.cumulHypoLn(3, "P(S<c_1)=P(S>c_2)= "+targetProbOfOneEnd);
+                
+                
                 double vraisemblance = proportionTest(end, sample);
-
-                if (vraisemblance < targetProbOfOneEnd || Double.isNaN(vraisemblance)) {
-                    PriLev.println(2, 1, this.getName() + " has very unikely match between cumlative and analytic at value " + end);
-                    return false;
+                Prints.cumulHypo(3, "Interpretation: assuming H_0 is true, S had "+vraisemblance+ " probability ");
+                Prints.cumulHypoLn(3, "of being at least as further from E[S] (on the same side)");
+                boolean acceptance = false;
+                if (Double.isNaN(vraisemblance)){
+                    Prints.cumulHypoLn(3,"calcul generated Nan. TODO: details");
+                }else if (vraisemblance < targetProbOfOneEnd ) {
+                    Prints.cumulHypoLn(3,vraisemblance+"<"+targetProbOfOneEnd);
+                }else{
+                    Prints.cumulHypoLn(3,vraisemblance+">"+targetProbOfOneEnd);
+                    Prints.cumulHypoLn(3,"H0 will be accepted");
+                    return true;
                 }
+                Prints.cumulHypoLn(3,"H0 will be rejected");
+                return false;
             }catch(NIFE ex){
-                PriLev.println(2, 1,"Missing implementation for " +this+". Proportion test on end "+ end+" will return true by default");
+                Prints.noImplemLn(1,"Missing implementation for " +this+". Proportion test on end "+ end+" will return true by default");
             }
         }
-        PriLev.println(2,1,this.getName() + "has credible match between cumlative and analytic");
+        //PriLev.println(2,1,this.getName() + "has credible match between cumlative and analytic");
         return true;
 
     }
@@ -151,33 +173,53 @@ public abstract class RandomLaw {
                 inferCount++;
             }
         }
+        
+        
         double sampleProp = inferCount / (double) sampleSize;
         double analEsp = cumulative(end);
-        double analVar = analEsp * (1 - analEsp);
+        //double analVar = analEsp * (1 - analEsp);
+        
+        Prints.cumulHypoLn(3, "Expectation: E[S]= "+ sampleSize*analEsp);
+        Prints.cumulHypo(3, "Sample results: ");
+        Prints.cumulHypoLn(3, "S = "+inferCount);
+        //Prints.cumulHypoLn(3, "S/n = "+sampleProp);
+        
         //in case of no variance
-        if (analEsp==sampleProp){
-            
-            PriLev.println(2,1,"Precisely identical value ("+analEsp+"), vraisemblance: 1.0");
-            return 1.0;
+        if (analEsp == sampleProp) {
+
+            Prints.cumulHypoLn(3, "S = "+inferCount);
+            return 0.5;
         }
-        Binomial bin = new Binomial(sampleSize,analEsp);
-        
+        Binomial bin = new Binomial(sampleSize, analEsp);
+
         double binCumulative = bin.cumulative(inferCount);
-        double binFurtherFromAverage = (binCumulative < 0.5) ? binCumulative : 1 - binCumulative;
-        PriLev.println(0,2,sampleProp + " vs " + analEsp + ", " + "vraisemblance: " + binFurtherFromAverage);
-        
-        
+        boolean sampleUnderAverage = sampleProp < analEsp;
+        double binFurtherFromAverage = (sampleUnderAverage) ? binCumulative : 1 - binCumulative;
+        if (sampleUnderAverage) {
+            Prints.cumulHypoLn(3,"P(S<="+inferCount+")= "+binFurtherFromAverage);
+        }else {
+            Prints.cumulHypoLn(3,"P(S>="+inferCount+")= "+binFurtherFromAverage);
+        }
+
+        /*
         double coteZ = (sampleProp - analEsp) * Math.sqrt(sampleSize) / Math.sqrt(analVar);
         double normalCumulative = Normal.cumulativeProb(coteZ);
         double normalFurtherFromAverage = (normalCumulative < 0.5) ? normalCumulative : 1 - normalCumulative;
         
         PriLev.println(2,1,sampleProp + " vs " + analEsp + ", " + "vraisemblance: " + normalFurtherFromAverage);
-        
+        */
         return binFurtherFromAverage;
         //return normalFurtherFromAverage;
 
     }
 
+    public final double zeeValue(AnalyticSummary anal, SampleStatSummary rans, boolean assumeVar) {
+        Prints.cumulHypo(3, "A hypothesis test will be performed to determine if the implementations of randomExec()");
+        Prints.cumulHypoLn(3, "and analyticEval()");
+        Prints.cumulHypoLn(3, "H_0: both analytic and randomExec functions are well implemented.");
+        Prints.cumulHypoLn(3, "H_1: Either cumulative or randomExec is not well implemented.");
+        return 0.0;
+    }
     public final double zeeValue(AnalyticSummary anal, SampleStatSummary rans) {
         double ans = (rans.espX(1) - anal.estMean);
         ans *= Math.sqrt(rans.sampleSize / rans.estSampVar());

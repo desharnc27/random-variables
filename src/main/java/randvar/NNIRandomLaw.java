@@ -7,7 +7,6 @@ package randvar;
 
 import exception.NIFE;
 import tools.Small;
-import tools.PriLev;
 
 /**
  *
@@ -40,8 +39,8 @@ public abstract class NNIRandomLaw extends RandomLaw {
             }
             return true;
         } catch (NIFE ex) {
-            PriLev.println(2,2,"Exception caught: " + ex.getMessage());
-            PriLev.println(2,2,"No calculations means no wrong calculations, so I'll return true.");
+            Prints.noImplem(2,"Exception caught: " + ex.getMessage());
+            Prints.noImplem(2,"No calculations means no wrong calculations, so I'll return true.");
             return true;
         }
     }
@@ -73,24 +72,24 @@ public abstract class NNIRandomLaw extends RandomLaw {
                 TODELEcheck = i;
             }
             if (!(Small.leqThan(esp_X,analSmry.estMean) && Small.leqThan(esp_X2,analSmry.estMeanSq)))
-                PriLev.println(1,1,"busted!");
+                Prints.wrongSums(1,"busted!");
             if (Small.ishEq(esp_X, analSmry.estMean) && Small.ishEq(esp_X2, analSmry.estMeanSq)) {
                 return true;
             }
             if (!Small.ishEq(esp_X, analSmry.estMean)){
-                PriLev.println(1,1,"analytic mean: "+analSmry.estMean);
-                PriLev.println(1,1,"summed mean: "+esp_X);
+                Prints.wrongSums(1,"analytic mean: "+analSmry.estMean);
+                Prints.wrongSums(1,"summed mean: "+esp_X);
                 return false;
             }else if (!Small.ishEq(esp_X2, analSmry.estMeanSq)){
-                PriLev.println(1,1,"analytic meanSq: "+analSmry.estMeanSq);
-                PriLev.println(1,1,"summed meanSq: "+esp_X2);
+                Prints.wrongSums(1,"analytic meanSq: "+analSmry.estMeanSq);
+                Prints.wrongSums(1,"summed meanSq: "+esp_X2);
                 return false;
             }
             
             return false;
         } catch (NIFE ex) {
-            PriLev.println(2,2,"Exception caught: " + ex.getMessage());
-            PriLev.println(2,2,"No calculations means no wrong calculations, so I'll return true.");
+            Prints.noImplem(2,"Exception caught: " + ex.getMessage());
+            Prints.noImplem(2,"No calculations means no wrong calculations, so I'll return true.");
             return true;
         }
 

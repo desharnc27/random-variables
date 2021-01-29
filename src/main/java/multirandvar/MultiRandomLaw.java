@@ -6,7 +6,6 @@
 package multirandvar;
 
 import tools.Funcs;
-import tools.PriLev;
 import tools.PrintMeths;
 
 
@@ -41,8 +40,8 @@ public abstract class MultiRandomLaw {
         
         if (sampleSize <5){
             
-            PriLev.println(3,0,"I don't manage sample of size less than 5, so i'll increase the smaple Size to 5.");
-            sampleSize =5;
+            System.out.println("Note(autoAdjust):sampleSize raised to 5 because less is not supported.");
+            sampleSize = 5;
         }
         
         double [][] sample=getSample(sampleSize);

@@ -22,7 +22,6 @@ import randvar.example.NormalDist;
 import randvar.example.PigeSR;
 import randvar.example.Poisson;
 import randvar.RandomLaw;
-import tools.PriLev;
 
 /**
  *
@@ -59,9 +58,6 @@ public class EnumerateLaws {
         
     }
     public static void main (String [] args){
-        PriLev.setLevel(0, 3);
-        PriLev.setLevel(1, 2);
-        PriLev.setLevel(2, 2);
         //double [] ends  = new double []{0,1,3,5,7,10,15,23,47};
         double [] ends  = new double []{3};
         ArrayList<RandomLaw> lawList =lawList();
