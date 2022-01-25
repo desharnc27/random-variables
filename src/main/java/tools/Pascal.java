@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tools;
 
 import exception.TLVE;
@@ -89,27 +84,40 @@ public class Pascal {
     }
 
     /**
+     * Returns the number of ways to select k not-necessarily distinct objects
+     * among n options
+     *
+     * @param n number of options
+     * @param k number of selections to make
+     * @return the number of ways to select k not-necessarily distinct objects
+     * among n options
+     */
+    public static long genComb(int n, int k) {
+        return comb(n + k - 1, k);
+    }
+
+    /**
      * Returns C(n,k)
      *
      * @param n
      * @param k
      * @return C(n,k)
      */
-    public static long get(int n, int k) {
+    public static long comb(int n, int k) {
         if (n < k) {
             //System.out.println("Fatal error: C(n,k) requested with n<k, not allowed");
             throw new ArithmeticException("Fatal error: C(" + n + "," + k + ") requested with first arg smaller, not allowed");
         }
         if (n >= maxLen) {
             //throw new TLVE("Fatal error: C(" + n + "," + k + ") for too big first arg, not allowed");
-            double ans = recupComb(n,k);
-            if (Double.isInfinite(ans)){
+            double ans = recupComb(n, k);
+            if (Double.isInfinite(ans)) {
                 throw new TLVE("Fatal error: C(" + n + "," + k + ") has too big value");
             }
-            return (long)ans;
+            return (long) ans;
         }
         if (n < 2 * k) {
-            return get(n, n - k);
+            return comb(n, n - k);
         }
         /*if (k == 0) {
             return 1;
@@ -129,7 +137,7 @@ public class Pascal {
                 newMax = 2 * pascalTriangle.length + 1;
             }
             createPascal(newMax);
-            return get(n, k);
+            return comb(n, k);
         }
         if (pascalTriangle[n][k] == -1) {
             throw new TLVE("Fatal error: C(" + n + "," + k + ") has too big value");
@@ -152,15 +160,16 @@ public class Pascal {
     }
 
     private static double recupComb(int n, int k) {
-        if (pascalTriangle==null || pascalTriangle.length != maxLen)
+        if (pascalTriangle == null || pascalTriangle.length != maxLen) {
             createPascal(maxLen);
-        if (k >=maxLen || pascalTriangle[maxLen - 1][k] == -1) {
+        }
+        if (k >= maxLen || pascalTriangle[maxLen - 1][k] == -1) {
             return Double.POSITIVE_INFINITY;
         }
         double ans = 1;
         int low = 1;
         int high = n;
-        
+
         while (low <= k && high > n - k) {
             if (ans <= 1) {
                 ans *= high--;
@@ -170,8 +179,9 @@ public class Pascal {
         }
         while (high > n - k) {
             ans *= high--;
-            if (Double.isInfinite(ans))
+            if (Double.isInfinite(ans)) {
                 return Double.POSITIVE_INFINITY;
+            }
         }
         return ans;
     }

@@ -34,13 +34,14 @@ public class PrintMeths {
         }
         System.out.println();
     }
+
     /**
      * Prints all values of an array and breaks line
      *
      * @param <T> any class
      * @param tab an array
      */
-    public static <T> void print(T []tab) {
+    public static <T> void print(T[] tab) {
         for (T i : tab) {
             System.out.print(i + " ");
         }
@@ -48,14 +49,15 @@ public class PrintMeths {
     }
 
     /**
-     * Prints all values of an array of int and breaks line.Each int takes a minimal space of maxLength.
+     * Prints all values of an array of int and breaks line.Each int takes a
+     * minimal space of maxLength.
      *
      * @param tab An array of int
-     * @param maxLength minimal number spaces used by every int 
+     * @param maxLength minimal number spaces used by every int
      */
     public static void print(int[] tab, int maxLength) {
         //TODO: arrange format
-        String format="%"+maxLength+"d";
+        String format = "%" + maxLength + "d";
         for (int i = 0; i < tab.length; i++) {
             String val = String.format(format, tab[i]);
             System.out.print(val + " ");
@@ -84,13 +86,12 @@ public class PrintMeths {
      * @param maxLength minimal number spaces used by every int
      *
      */
-
     public static void print(int[][] tab, int maxLength) {
         for (int[] tab1 : tab) {
             print(tab1, maxLength);
         }
     }
-    
+
     /**
      * Prints all values of an array of double and breaks line
      *
@@ -103,8 +104,6 @@ public class PrintMeths {
         }
         System.out.println();
     }
-
-
 
     /**
      * Prints all arrays of tab, breaks line between each of them

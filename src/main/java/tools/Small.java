@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tools;
 
 /**
@@ -17,6 +12,7 @@ public class Small {
     public static boolean ishEq(double a, double b) {
         return Math.abs(a - b) < BIG_EPSILON;
     }
+
     public static boolean eq(double a, double b) {
         return Math.abs(a - b) < EPSILON;
     }

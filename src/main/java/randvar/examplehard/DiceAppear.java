@@ -1,79 +1,66 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package randvar.examplehard;
 
-import exception.IPVE;
-import randvar.AnalyticSummary;
-import randvar.NNIRandomLaw;
-import randvar.RandomLaw;
-import tools.Funcs;
+import randvar.example.DiceTypeLaw;
+import tools.SomeFunctions;
 
 /**
  *
  * @author desha
- * 
- * X is obtained by throwing nDices dice and counting the number of different faces obtained. Every dice has nFaces faces,
- * numbered from 1 to nFaces inclusively.
- * 
- * Example (nDices=8,nFaces=6): throw 8 dice, get (6,3,4,1,1,5,1,3), containing all possibilities except 2, therefore X = 5 
+ *
+ * X is obtained by throwing nbDice dice and counting the number of different
+ * faces obtained. Every dice has nbFaces faces, numbered from 1 to nbFaces
+ * inclusively.
+ *
+ * Example (nbDice=8,nbFaces=6): throw 8 dice, get (6,3,4,1,1,5,1,3), containing
+ * all possibilities except 2, therefore X = 5
  */
-public class DiceAppear extends NNIRandomLaw {
-    private int nFaces;
-    private int nDices;
-    
-    public DiceAppear(int nDices){
-        this(nDices,6);
+public class DiceAppear extends DiceTypeLaw {
+
+    public DiceAppear(int nbDice) {
+        super(nbDice, 6);
     }
-    public DiceAppear(int nDices, int nFaces){
-        setNbFaces(nFaces);
-        setNbDices(nDices);
+
+    public DiceAppear(int nbDice, int nbFaces) {
+        super(nbDice, nbFaces);
     }
+
     @Override
-    public String getName(){
-        return "DiceAppear"+Funcs.paramStr(nFaces,nDices);
+    public String getName() {
+        return "DiceAppear" + SomeFunctions.paramStr(nbFaces, nbDice);
     }
-    public final void setNbDices(int i){
-        nDices=i;
-        if (nDices<1){
-            throw  (IPVE.positive("nDices", nDices));
-        }
-    }
-    public final void setNbFaces(int i){
-        nFaces=i;
-        if (nFaces<1){
-            throw  (IPVE.positive("nFaces", nFaces));
-        }
-    }
-    
+
     @Override
     public double randomExec() {
-        int [] found = new int [nFaces];
-	for(int i = 0; i < nFaces; i++) {
-		found[i] = 0;
-	}
-	for(int i = 0; i < nDices; i++) {
-		found[(int)(Math.random()*nFaces)] = 1;
-	}
-	int count = 0;
-	for(int i = 0; i < nFaces; i++) {
-		if (found[i] == 1)
-			count++;
-	}
-	return count;
+        int[] found = new int[nbFaces];
+        for (int i = 0; i < nbFaces; i++) {
+            found[i] = 0;
+        }
+        for (int i = 0; i < nbDice; i++) {
+            found[(int) (Math.random() * nbFaces)] = 1;
+        }
+        int count = 0;
+        for (int i = 0; i < nbFaces; i++) {
+            if (found[i] == 1) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override
-    public AnalyticSummary analyticEval() {
-        double valA = Math.pow((nFaces - 1.0) / nFaces, nDices);
-	double valB = Math.pow((nFaces - 2.0) / nFaces, nDices);
+    public double getMean() {
+        double valA = Math.pow((nbFaces - 1.0) / nbFaces, nbDice);
+        //double valB = Math.pow((nbFaces - 2.0) / nbFaces, nbDice);
 
-	double esp_X = nFaces * (1 - valA);
-	double var_X = nFaces * (valA - valA * valA) - nFaces * (nFaces - 1) * (valA * valA - valB);
-
-	return AnalyticSummary.buildByVar(esp_X, var_X);
+        return nbFaces * (1 - valA);
     }
-    
+
+    @Override
+    public double getVar() {
+        double valA = Math.pow((nbFaces - 1.0) / nbFaces, nbDice);
+        double valB = Math.pow((nbFaces - 2.0) / nbFaces, nbDice);
+
+        return nbFaces * (valA - valA * valA) - nbFaces * (nbFaces - 1) * (valA * valA - valB);
+    }
+
 }

@@ -1,16 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package randvar.example;
 
 import exception.IPVE;
 import exception.TLVE;
-import randvar.AnalyticSummary;
+
 import randvar.NNIRandomLaw;
 import randvar.Prints;
-import tools.Funcs;
+import tools.SomeFunctions;
 import tools.Pascal;
 import tools.Small;
 
@@ -32,7 +27,7 @@ public class Binomial extends NNIRandomLaw {
 
     @Override
     public String getName() {
-        return "Binomial" + Funcs.paramStr(n, p);
+        return "Binomial" + SomeFunctions.paramStr(n, p);
     }
 
     public final void setN(int n) {
@@ -60,20 +55,13 @@ public class Binomial extends NNIRandomLaw {
     }
 
     @Override
-    public AnalyticSummary analyticEval() {
-        double esp = p * n;
-        double vari = (1 - p) * esp;
-        return AnalyticSummary.buildByVar(esp, vari);
-    }
-
-    @Override
     public double cumulative(double d) {
 
         if (d > n) {
             return 1;
         }
         try {
-            Pascal.get(n, n / 2);
+            Pascal.comb(n, n / 2);
             //No TLV exception thrown -> Exact Computation will work
             return super.cumulative(d);
         } catch (TLVE ex) {
@@ -82,7 +70,7 @@ public class Binomial extends NNIRandomLaw {
         int i = (int) (d + Small.EPSILON);
 
         /*try {
-            Pascal.get(n, i);
+            Pascal.comb(n, i);
             //No TLV exception thrown -> Exact Computation will work
             if (2 * i <= n) {
                 return super.cumulative(d);
@@ -129,7 +117,17 @@ public class Binomial extends NNIRandomLaw {
         if (i < 0) {
             return 0;
         }
-        return Pascal.get(n, i) * Math.pow(p, i) * Math.pow(1 - p, n - i);
+        return Pascal.comb(n, i) * Math.pow(p, i) * Math.pow(1 - p, n - i);
+    }
+
+    @Override
+    public double getMean() {
+        return n * p;
+    }
+
+    @Override
+    public double getVar() {
+        return getMean() * (1 - p);
     }
 
 }

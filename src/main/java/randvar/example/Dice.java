@@ -1,79 +1,67 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package randvar.example;
 
-import exception.IPVE;
-import randvar.AnalyticSummary;
-import randvar.NNIRandomLaw;
-import tools.Funcs;
-import static tools.Pascal.fact;
+import tools.SomeFunctions;
 import tools.Small;
 
 /**
  *
  * @author desha
- * 
- * X is the number obtained by throwing a dice.
- * Every dice has nFaces faces, numbered from 1 to nFaces inclusively.
- * 
+ *
+ * X is the number obtained by throwing a dice. Every dice has nbFaces faces,
+ * numbered from 1 to nbFaces inclusively.
+ *
  */
-public class Dice extends NNIRandomLaw {
-    private int nFaces=6;
-    
-    public Dice (){
-        this(6);
+public class Dice extends DiceTypeLaw {
+
+    public Dice() {
+        super(1, 6);
     }
-    public Dice( int nbFaces){
-        setNbFaces(nbFaces);
-        
-    }
-    @Override
-    public String getName(){
-        return "Dice"+Funcs.paramStr(nFaces);
-    }
-    public final void setNbFaces(int i){
-        nFaces=i;
-        if (nFaces<1){
-            throw (IPVE.create("nFaces", String.valueOf(nFaces), "[1,inf"));
-        }
-    }
-    @Override
-    public double randomExec() {
-        return Math.ceil(nFaces*Math.random());
+
+    public Dice(int nbFaces) {
+        super(1, nbFaces);
     }
 
     @Override
-    public AnalyticSummary analyticEval() {
-        int accX=0;
-        int accX2=0;
-        for (int i=1;i<=nFaces;i++){
-            accX+=i;
-            accX2+=i*i;
+    public String getName() {
+        return "Dice" + SomeFunctions.paramStr(nbFaces);
+    }
+
+    @Override
+    public double randomExec() {
+        return Math.ceil(nbFaces * Math.random());
+    }
+
+    @Override
+    public double exactProb(int i) {
+
+        if (i < 1 || i > nbFaces) {
+            return 0;
         }
-        double espX = (accX+0.0)/nFaces;
-        double espX2 = (accX2+0.0)/nFaces;
-        return new AnalyticSummary(espX,espX2);
+        return 1 / (double) nbFaces;
     }
-    
+
     @Override
-    public double exactProb(int i){
-        
-        if (i<1 || i>nFaces)
+    public double cumulative(double d) {
+        int i = (int) (d + Small.EPSILON);
+        if (i < 1) {
             return 0;
-        return 1/(double)nFaces;
-    }
-    @Override
-    public double cumulative(double d){
-        int i = (int)(d+Small.EPSILON);
-        if (i<1 )
-            return 0;
-        if (i>nFaces)
+        }
+        if (i > nbFaces) {
             return 1;
-        return i/(double)nFaces;
+        }
+        return i / (double) nbFaces;
     }
-    
-    
+
+    @Override
+    public double getMean() {
+        return nbFaces * (nbFaces + 1) / 2;
+    }
+
+    @Override
+    public double getVar() {
+        double mean = getMean();
+        double meanSq = (nbFaces + 1) * (2 * nbFaces + 1) / 6;
+        return meanSq - mean * mean;
+    }
+
 }

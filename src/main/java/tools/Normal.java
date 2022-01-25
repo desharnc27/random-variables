@@ -1,30 +1,22 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tools;
 
 /**
  *
  * @author desha
  */
-
 //TODO: bring to myTools
-
 public class Normal {
-    
-    
+
     /**
-     * Computes P(x>X), where X follows normal standard distribution 
+     * Computes P(x>X), where X follows normal standard distribution
+     *
      * @param x
      * @return P(x>X), where X follows normal standard distribution
      */
     public static double cumulativeProb(double x) {
-        
+
         //Method: Computes the MacLaurin serie of  the integral of the standard normal density.
         //Stops when accuracy is sufficient.
-        
         double toler = Small.EPSILON;
         double val = 0;
 
@@ -46,13 +38,16 @@ public class Normal {
         double coeff = Math.sqrt(1 / (2 * Math.PI));
         return val * coeff + 0.5;
     }
+
     /**
-     * Computes z such that P(z>X)=alpha, where X follows normal standard distribution 
+     * Computes z such that P(z>X)=alpha, where X follows normal standard
+     * distribution
+     *
      * @param alpha
      * @return z
      */
     public static double endPoint2(double alpha) {
-        
+
         //Method: approximative binary search
         double zDown = -4;
         double zUp = 4;
@@ -73,23 +68,25 @@ public class Normal {
         }
         return zMid;
     }
+
     /**
-     * Computes z such that P(z>X)=alpha, where X follows normal standard distribution  
+     * Computes z such that P(z>X)=alpha, where X follows normal standard
+     * distribution
+     *
      * @param alpha
      * @return z
      */
     public static double endPoint(double alpha) {
-        
+
         //Method: Newton convergence
-        
         double coeff = Math.sqrt(1 / (2 * Math.PI));
         double x;
         double nextX = 0;
-        do{
+        do {
             x = nextX;
-            double denom =coeff * Math.exp(-x*x/2);
-            nextX = x - (cumulativeProb(x)-alpha)/denom;
-        }while(Math.abs(nextX-x)>Small.BIG_EPSILON);
+            double denom = coeff * Math.exp(-x * x / 2);
+            nextX = x - (cumulativeProb(x) - alpha) / denom;
+        } while (Math.abs(nextX - x) > Small.BIG_EPSILON);
         return nextX;
     }
 
@@ -99,18 +96,18 @@ public class Normal {
     }
 
     public static void main(String[] args) {
-        double alpha=Math.random();
-        System.out.println("alpha: "+alpha);
+        double alpha = Math.random();
+        System.out.println("alpha: " + alpha);
         double ansBin = endPoint2(alpha);
         double ansNewt = endPoint(alpha);
-        System.out.println("ansBin: "+ansBin);
-        System.out.println("ansNewt: "+ansNewt);
-        
+        System.out.println("ansBin: " + ansBin);
+        System.out.println("ansNewt: " + ansNewt);
+
         double inBin = cumulativeProb(ansBin);
         double inNewt = cumulativeProb(ansNewt);
-        
-        System.out.println("inBin: "+inBin);
-        System.out.println("inNewt: "+inNewt);
-        
+
+        System.out.println("inBin: " + inBin);
+        System.out.println("inNewt: " + inNewt);
+
     }
 }

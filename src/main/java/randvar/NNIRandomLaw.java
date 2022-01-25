@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package randvar;
 
 import exception.NIFE;
@@ -10,10 +5,20 @@ import tools.Small;
 
 /**
  *
+ * NNI stands for non-negative integer Note that even if the possible values for
+ * a NNI random variable are mathematically integers, here they are treated as
+ * double format since NNIRandomLaw class must match the parent class.
+ *
  * @author desha
  */
 public abstract class NNIRandomLaw extends RandomLaw {
 
+    /**
+     * Return P[X = i]
+     *
+     * @param i
+     * @return P[X = i]
+     */
     public double exactProb(int i) {
         throw NIFE.exactProb(this);
     }
@@ -28,6 +33,13 @@ public abstract class NNIRandomLaw extends RandomLaw {
         return sum;
     }
 
+    /**
+     * Verifies that cumulative(...) and exactProb(...) implementations match
+     * together
+     *
+     * @return true if cumulative(...) and exactProb(...) match together, false
+     * otherwise
+     */
     public boolean verifyCumulativeVsExact() {
         try {
             double cumul = 0;
@@ -39,57 +51,71 @@ public abstract class NNIRandomLaw extends RandomLaw {
             }
             return true;
         } catch (NIFE ex) {
-            Prints.noImplem(2,"Exception caught: " + ex.getMessage());
-            Prints.noImplem(2,"No calculations means no wrong calculations, so I'll return true.");
+            Prints.noImplem(2, "Exception caught: " + ex.getMessage());
+            Prints.noImplem(2, "No calculations means no wrong calculations, so I'll return true.");
             return true;
         }
     }
 
+    /**
+     * Verifies that exactProb(...), getVar() and getMean() implementations
+     * match together
+     *
+     * @return true if cumulative(...) and exactProb(...) match together, false
+     * otherwise
+     *
+     * Note :There is an unsafeness in this method since it does not know when
+     * to stop looking for possible values of the random variable. It stops if
+     * from some i to 2i+10 there is nothing found, which, for some
+     * distribution, would be completely faulty.
+     *
+     * TODO: maybe a bunch of calls to randomExec() would increase safety, since
+     * it would give another minimum value to reach
+     */
     public boolean verifyStatSummaryVsExact() {
-        
-        // There is an unsafety in this method since it does not know when to stop looking for possible values of the random variable.
-        // It stops if from some i to 2i+10 there is nothing found, which, for some distribution, would be completely faulty.
+        double analVar = getVar();
+        double analMean = getMean();
+        double analMeanSq = analVar + analMean * analMean;
+
         try {
-            int TODELEcheck=0;
-            AnalyticSummary analSmry = this.analyticEval();
-            int lastSignificant=0;
-            double qwe = 1;
+            int lastSignificant = 0;
+            double tempProb = 1;
             double esp_X = 0;
             double esp_X2 = 0;
-            for (int i = 0; i<2*lastSignificant+10 ; i++) {
-                try{
-                    qwe = this.exactProb(i);
-                }catch(ArithmeticException ae){
+            for (int i = 0; i < 2 * lastSignificant + 10; i++) {
+                try {
+                    tempProb = this.exactProb(i);
+                } catch (ArithmeticException ae) {
                     break;
                 }
-                if (qwe*i*i<Small.EPSILON){
-                    
-                }else{
-                    lastSignificant=i;
-                    esp_X += i * qwe;
-                    esp_X2 += i * i * qwe;
+                if (tempProb * i * i < Small.EPSILON) {
+
+                } else {
+                    lastSignificant = i;
+                    esp_X += i * tempProb;
+                    esp_X2 += i * i * tempProb;
                 }
-                TODELEcheck = i;
             }
-            if (!(Small.leqThan(esp_X,analSmry.estMean) && Small.leqThan(esp_X2,analSmry.estMeanSq)))
-                Prints.wrongSums(1,"busted!");
-            if (Small.ishEq(esp_X, analSmry.estMean) && Small.ishEq(esp_X2, analSmry.estMeanSq)) {
+            if (!(Small.leqThan(esp_X, analMean) && Small.leqThan(esp_X2, analMeanSq))) {
+                Prints.wrongSums(1, "busted!");
+            }
+            if (Small.ishEq(esp_X, analMean) && Small.ishEq(esp_X2, analMeanSq)) {
                 return true;
             }
-            if (!Small.ishEq(esp_X, analSmry.estMean)){
-                Prints.wrongSums(1,"analytic mean: "+analSmry.estMean);
-                Prints.wrongSums(1,"summed mean: "+esp_X);
+            if (!Small.ishEq(esp_X, analMean)) {
+                Prints.wrongSums(1, "analytic mean: " + analMean);
+                Prints.wrongSums(1, "summed mean: " + esp_X);
                 return false;
-            }else if (!Small.ishEq(esp_X2, analSmry.estMeanSq)){
-                Prints.wrongSums(1,"analytic meanSq: "+analSmry.estMeanSq);
-                Prints.wrongSums(1,"summed meanSq: "+esp_X2);
+            } else if (!Small.ishEq(esp_X2, analMeanSq)) {
+                Prints.wrongSums(1, "analytic meanSq: " + analMeanSq);
+                Prints.wrongSums(1, "summed meanSq: " + esp_X2);
                 return false;
             }
-            
+
             return false;
         } catch (NIFE ex) {
-            Prints.noImplem(2,"Exception caught: " + ex.getMessage());
-            Prints.noImplem(2,"No calculations means no wrong calculations, so I'll return true.");
+            Prints.noImplem(2, "Exception caught: " + ex.getMessage());
+            Prints.noImplem(2, "No calculations means no wrong calculations, so I'll return true.");
             return true;
         }
 

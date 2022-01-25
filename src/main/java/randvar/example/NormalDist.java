@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package randvar.example;
 
 import exception.IPVE;
-import randvar.AnalyticSummary;
+
 import randvar.RandomLaw;
-import tools.Funcs;
+import tools.SomeFunctions;
 import tools.Normal;
 
 /**
@@ -36,18 +31,13 @@ public class NormalDist extends RandomLaw {
 
     @Override
     public String getName() {
-        return "Normal" + Funcs.paramStr(mean, sd * sd);
+        return "Normal" + SomeFunctions.paramStr(mean, sd * sd);
     }
 
     @Override
     public double randomExec() {
         double z = Normal.randNormal();
         return z * sd + mean;
-    }
-
-    @Override
-    public AnalyticSummary analyticEval() {
-        return AnalyticSummary.buildByVar(mean, sd * sd);
     }
 
     public final void setMean(double mean) {
@@ -65,6 +55,16 @@ public class NormalDist extends RandomLaw {
     public double cumulative(double d) {
         double z = (d - mean) / sd;
         return Normal.cumulativeProb(z);
+    }
+
+    @Override
+    public double getMean() {
+        return mean;
+    }
+
+    @Override
+    public double getVar() {
+        return sd * sd;
     }
 
 }
