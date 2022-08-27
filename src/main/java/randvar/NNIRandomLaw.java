@@ -5,7 +5,7 @@ import tools.Small;
 
 /**
  *
- * NNI stands for non-negative integer Note that even if the possible values for
+ * NNI stands for non-negative integer. Note that even if the possible values for
  * a NNI random variable are mathematically integers, here they are treated as
  * double format since NNIRandomLaw class must match the parent class.
  *
@@ -61,7 +61,8 @@ public abstract class NNIRandomLaw extends RandomLaw {
      * Verifies that exactProb(...), getVar() and getMean() implementations
      * match together
      *
-     * @return true if cumulative(...) and exactProb(...) match together, false
+     * @return true if exactProb(...), getVar() and getMean() implementations
+     * match together, false otherwise
      * otherwise
      *
      * Note :There is an unsafeness in this method since it does not know when

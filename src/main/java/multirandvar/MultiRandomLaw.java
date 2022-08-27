@@ -106,9 +106,9 @@ public abstract class MultiRandomLaw {
         System.out.println("skAnal.estMean: "+skAnal.estMean);
         System.out.println("estVarAnal: "+estVarAnal);
         System.out.println("zeeValue(): "+zeeValue(skAnal,skRand));
-        System.out.println("chuckValue(): "+chuckValue(skAnal,skRand));
-        System.out.println("zeeValue(): "+zeeValue(skAnal,skRand));
-        System.out.println("WololoValue(): "+wololoValue(skAnal,skRand));*/
+        System.out.println("chuck Value(): "+chuckValue(skAnal,skRand));
+        System.out.println("zee Value(): "+zeeValue(skAnal,skRand));
+        System.out.println("unnamedMetricA Value(): "+unnamedMetricAValue(skAnal,skRand));*/
     }
     /*public double zeeValue(MultiAnalyticSummary anal, MultiSampleStatSummary rans){
         double ans = (rans.espX(1)-anal.estMean);

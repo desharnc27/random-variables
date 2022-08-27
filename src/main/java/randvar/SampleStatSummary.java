@@ -37,7 +37,7 @@ public class SampleStatSummary {
         return espX(2) - 2 * espX(1) * mu + mu * mu;
     }
 
-    public double getWololoCoeff(double mu) {
+    public double getUnnamedMetric1Coeff(double mu) {
         //double mom=this.espX(1);
         //double espX(2)=this.espX(2);
         double momom = espX(1) * espX(1);

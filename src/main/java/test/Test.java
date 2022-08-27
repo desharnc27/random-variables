@@ -43,8 +43,8 @@ public class Test {
         //double [] ends = new double []{1,4,6,7,8.1,15.3,19.5,20,20.5,25,28.8,34,37,44,53,70}; 
         double[] ends = new double[]{1, 2, 3, 4};
 
-        //System.out.println(ds.compareAnalyticCumulativeToSample(ends,10000,0.02));
-        ds.compareAnalyticToSample(10000);
+        System.out.println(ds.compareAnalyticCumulativeToSample(ends,10000,0.02));
+        ds.compareAnalyticToSample(1000);
         /*for (int i = 0;i<10;i++){
             System.out.println(i+": "+ds.exactProb(i)+", "+ds.cumulative(i));
         }*/

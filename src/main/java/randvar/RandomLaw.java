@@ -36,7 +36,7 @@ public abstract class RandomLaw {
     public abstract double getMean();
 
     /**
-     * Returns Var[X], also called analytic mean in this project
+     * Returns Var[X], also called analytic variance in this project
      *
      * @return Var[X]
      */
@@ -152,16 +152,28 @@ public abstract class RandomLaw {
 
         double estVarRand = skRand.estSampVar();
         double estVarAnal = getVar();
-
+        Prints.summaryValuesLn(2, "---------------");
         //double coteZ = (skRand.estMean-skAnal.estMean)*Math.sqrt(sampleSize/estVarRand);
-        Prints.summaryValuesLn(2, "skRand.estMean: " + skRand.espX(1));
-        Prints.summaryValuesLn(2, "estVarRand: " + estVarRand);
-        Prints.summaryValuesLn(2, "skAnal.estMean: " + analMean);
-        Prints.summaryValuesLn(2, "estVarAnal: " + estVarAnal);
-        Prints.summaryValuesLn(2, "zScore(): " + zScore(analMean, analVar, skRand));
-        Prints.summaryValuesLn(2, "chuckValue(): " + chuckValue(analMean, analVar, skRand));
-        Prints.summaryValuesLn(2, "zScore(): " + zScore(analMean, analVar, skRand));
-        Prints.summaryValuesLn(2, "WololoValue(): " + wololoValue(analMean, analVar, skRand));
+        String warning = "Warning: following metrics (except z-score with known variance) are not perfectly implemented, ";
+        warning += "so the only interpretation you should make of them is:";
+        String warning1 = "The closer to 0 they are, higher is the probability that you implemented your random law prefectly.";
+        String warning2 = "The z-score (known variance) has only 0.26% chance of being out of range [-3,3] if implementation is perfect, ";
+        warning2 += "so it is more likely that you made a mistake if you're out of that range.";
+        String warning3 = "While the z-score compares the analytic and sample means, the unnamed metrics compare the analytic and sample variances";
+        Prints.summaryValuesLn(2, "sample mean: " + skRand.espX(1));
+        Prints.summaryValuesLn(2, "sample var: " + estVarRand);
+        Prints.summaryValuesLn(2, "analytic mean: " + analMean);
+        Prints.summaryValuesLn(2, "analytic variance: " + estVarAnal);
+        Prints.summaryValuesLn(2, warning);
+        Prints.summaryValuesLn(2, warning1);
+        Prints.summaryValuesLn(2, warning2);
+        Prints.summaryValuesLn(2, warning3);
+        Prints.summaryValuesLn(2, "z score, assuming analytic variance: " + zScoreWithKnownVar(analMean, analVar, skRand));       
+        Prints.summaryValuesLn(2, "z score, unknown variance: " + zScoreWithUnknownVar(analMean, skRand));
+        Prints.summaryValuesLn(2, "unnamedMetric1 Value(): " + unnamedMetric1Value(analMean, analVar, skRand));
+        Prints.summaryValuesLn(2, "unnamedMetric2 Value(): " + unnamedMetric2Value(analMean, analVar, skRand));
+        Prints.summaryValuesLn(2, "---------------");
+        
 
     }
 
@@ -177,7 +189,7 @@ public abstract class RandomLaw {
      * @param sampleSize sample size
      * @param probType2Err the probability of likelihood of sample according to
      * analytics, under which we reject the hypothesis that analytic
-     * evalutations are correct
+     * evaluations are correct
      * @return true if, for every threshold, null hypothesis is accepted.
      */
     public boolean compareAnalyticCumulativeToSample(double[] ends, int sampleSize, double probType2Err) {
@@ -289,15 +301,29 @@ public abstract class RandomLaw {
     }
 
     /**
-     * Returns the z-score of sample summary relatively to analytic mean and
-     * variance values
+     * Returns the z-score (analytic mean - sample mean) /sqrt(analytic variance/sampleSize)
      *
      * @param analMean
      * @param analVar
      * @param rans
      * @return
      */
-    public final static double zScore(double analMean, double analVar, SampleStatSummary rans) {
+    public final static double zScoreWithKnownVar(double analMean, double analVar, SampleStatSummary rans) {
+        double ans = (rans.espX(1) - analMean);
+        ans *= Math.sqrt(rans.sampleSize / analVar);
+        return ans;
+    }
+    
+    /**
+     * Returns the z-score (analytic mean - sample mean) /sqrt(sample variance/sampleSize)
+     * 
+     * Warning: for small samples, Student should be used, but not implemented yet, so this fct is faulty
+     * @param analMean
+     * @param analVar
+     * @param rans
+     * @return
+     */
+    public final static double zScoreWithUnknownVar(double analMean, SampleStatSummary rans) {
         double ans = (rans.espX(1) - analMean);
         ans *= Math.sqrt(rans.sampleSize / rans.estSampVar());
         return ans;
@@ -311,7 +337,7 @@ public abstract class RandomLaw {
      * @param rans SampleStatSummary of some sample
      * @return
      */
-    public final static double chuckValue(double analMean, double analVar, SampleStatSummary rans) {
+    public final static double unnamedMetric2Value(double analMean, double analVar, SampleStatSummary rans) {
         double ans = rans.estSampVar() - analVar;
         ans /= (rans.estSampVar() * Math.sqrt(2.0 / rans.sampleSize));
         return ans;
@@ -325,9 +351,9 @@ public abstract class RandomLaw {
      * @param rans SampleStatSummary of some sample
      * @return
      */
-    public final static double wololoValue(double analMean, double analVar, SampleStatSummary rans) {
+    public final static double unnamedMetric1Value(double analMean, double analVar, SampleStatSummary rans) {
         double ans = rans.estSampVar() - analVar;
-        ans /= Math.sqrt(rans.getWololoCoeff(analMean));
+        ans /= Math.sqrt(rans.getUnnamedMetric1Coeff(analMean));
         return ans;
     }
 

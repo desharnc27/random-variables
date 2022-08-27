@@ -11,7 +11,7 @@ import randvar.NNIRandomLaw;
 /**
  * Parent class for all laws using a certain number of identical uniform dice
  * (faces [1..nbFaces]) Purpose of this class: I just wanted to shrink a bit of
- * code.
+ * code, because I love dice too much.
  *
  * @author desharnc27
  */

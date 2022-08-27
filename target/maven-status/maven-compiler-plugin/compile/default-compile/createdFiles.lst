@@ -1,5 +1,6 @@
 randvar\example\BinomNeg.class
 yourcode\ExOfRandLaw.class
+yourcode\TestExample.class
 garbage\StatKeeper.class
 randvar\examplehard\DiceScope.class
 test\NoProbs.class
@@ -17,6 +18,7 @@ garbage\PoissonFlip.class
 randvar\example\Binomial.class
 randvar\example\ExponentialLaw.class
 multirandvar\FullCrescendo.class
+general\GeneralMeths.class
 randvar\SampleStatSummary.class
 multirandvar\MultiSampleStatSummary.class
 randvar\examplehard\NGTW.class
@@ -28,10 +30,10 @@ test\EnumerateLaws.class
 randvar\example\Hypergeometric.class
 tools\SomeFunctions.class
 randvar\example\Dice.class
-tools\GeneralMeths.class
 exception\NIFE.class
 test\Test.class
 exception\TLVE.class
+yourcode\ExOfRandNNILaw.class
 tools\PrintMeths.class
 randvar\example\Geometric.class
 randvar\examplehard\DiceAppear.class
