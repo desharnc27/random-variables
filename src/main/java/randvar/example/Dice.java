@@ -54,7 +54,7 @@ public class Dice extends DiceTypeLaw {
 
     @Override
     public double getMean() {
-        return nbFaces * (nbFaces + 1) / 2;
+        return (nbFaces + 1.0) / 2;
     }
 
     @Override

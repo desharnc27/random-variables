@@ -69,23 +69,6 @@ public class Binomial extends NNIRandomLaw {
 
         int i = (int) (d + Small.EPSILON);
 
-        /*try {
-            Pascal.comb(n, i);
-            //No TLV exception thrown -> Exact Computation will work
-            if (2 * i <= n) {
-                return super.cumulative(d);
-            }
-            //Here since i is closer from n than from 0, to avoid TLVE,
-            //we must calculate 1-P(X>d) instead of P(X<=d)
-            double antires = 0;
-            for (int j = n; j > i; j--) {
-                
-                antires += this.exactProb(j);
-            }
-            PriLev.println(0,4,"Binomial cumulative() used exact (reverse calcs)");
-            return 1 - antires;
-        } catch (TLVE ex) {
-        }*/
         if (n * p < Binomial.POISSON_THRESHOLD) {
 
             Poisson pd = new Poisson(n * p);
@@ -100,12 +83,6 @@ public class Binomial extends NNIRandomLaw {
             //return pld.cumulative(d);
         }
 
-        /*if (n*p>Binomial.NORMAL_THRESHOLD && n*(1-p)>Binomial.NORMAL_THRESHOLD){
-            //Normal approximation will be ok
-            NormalDist nd = NormalDist.buildByVar(n*p,n*(1-p));
-            return nd.cumulative(i+0.5);
-        }*/
-        //No choice, normal approximation is the only way
         NormalDist nd = NormalDist.buildByVar(n * p, n * p * (1 - p));
         Prints.distApproxLn(4, "Note: " + this.getName() + " approximated to " + nd.getName() + "for cumulative calculation");
         return nd.cumulative(i);

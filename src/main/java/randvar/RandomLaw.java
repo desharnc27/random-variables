@@ -4,6 +4,7 @@ import randvar.examplehard.DiceAppear;
 import exception.NIFE;
 import java.util.Arrays;
 import randvar.example.Binomial;
+import tools.MiscFunctions;
 import tools.Normal;
 import tools.Small;
 
@@ -86,8 +87,8 @@ public abstract class RandomLaw {
      * Makes a sample of IID variables having this law, then calls
      * makeRandSampleStats(sample) on it
      *
+     * @param sampleSize
      * @see makeRandSampleStats(double [] sample)
-     * @param num size of sample
      * @return .....
      */
     public final SampleStatSummary makeRandSampleStats(int sampleSize) {
@@ -135,6 +136,31 @@ public abstract class RandomLaw {
         return sk;
     }
 
+    public final void meanTestWithKnownVar(SampleStatSummary skRand) {
+        double analMean = this.getMean();
+        double analVar = this.getVar();
+        double score = zValue(analMean, analVar, skRand);
+        double negScore = -Math.abs(score);
+        String probStr = score < 0 ? "P(X<z)=" : "P(X>z)=";
+        Prints.summaryValues(2, "z-value (known variance): " + score);
+        Prints.summaryValuesLn(2, ", " + probStr + Normal.cumulativeProb(negScore));
+    }
+
+    public final void meanTestWithUnknownVar(SampleStatSummary skRand) {
+        double analMean = this.getMean();
+        double score = tValue(analMean, skRand);
+        double negScore = -Math.abs(score);
+        String probStr = score < 0 ? "P(X<t)=" : "P(X>t)=";
+        Prints.summaryValues(2, "t-value (unknown variance): " + score);
+        int df = skRand.sampleSize - 1;
+        if (df <= 30) {
+
+            Prints.summaryValuesLn(2, ", " + probStr + MiscFunctions.studentCumulativeApprox(negScore, df));
+        } else {
+            Prints.summaryValuesLn(2, ", [Student approximated to normal] " + probStr + Normal.cumulativeProb(negScore));
+        }
+    }
+
     //TODO: extreme values or small samples, no use of normal
     /**
      * Generates a sample of IID variables having this law, then compares to the
@@ -154,26 +180,25 @@ public abstract class RandomLaw {
         double estVarAnal = getVar();
         Prints.summaryValuesLn(2, "---------------");
         //double coteZ = (skRand.estMean-skAnal.estMean)*Math.sqrt(sampleSize/estVarRand);
-        String warning = "Warning: following metrics (except z-score with known variance) are not perfectly implemented, ";
+        String warning = "Warning: variance metrics are not perfectly defined and implemented, ";
         warning += "so the only interpretation you should make of them is:";
         String warning1 = "The closer to 0 they are, higher is the probability that you implemented your random law prefectly.";
         String warning2 = "The z-score (known variance) has only 0.26% chance of being out of range [-3,3] if implementation is perfect, ";
         warning2 += "so it is more likely that you made a mistake if you're out of that range.";
-        String warning3 = "While the z-score compares the analytic and sample means, the unnamed metrics compare the analytic and sample variances";
-        Prints.summaryValuesLn(2, "sample mean: " + skRand.espX(1));
-        Prints.summaryValuesLn(2, "sample var: " + estVarRand);
+        String warning3 = "While the z-test and t-test is a test for mean, the unnamed metrics are tests for variance.";
         Prints.summaryValuesLn(2, "analytic mean: " + analMean);
         Prints.summaryValuesLn(2, "analytic variance: " + estVarAnal);
+        Prints.summaryValuesLn(2, "sample mean: " + skRand.espX(1));
+        Prints.summaryValuesLn(2, "sample var: " + estVarRand);
         Prints.summaryValuesLn(2, warning);
         Prints.summaryValuesLn(2, warning1);
-        Prints.summaryValuesLn(2, warning2);
+        //Prints.summaryValuesLn(2, warning2);
         Prints.summaryValuesLn(2, warning3);
-        Prints.summaryValuesLn(2, "z score, assuming analytic variance: " + zScoreWithKnownVar(analMean, analVar, skRand));       
-        Prints.summaryValuesLn(2, "z score, unknown variance: " + zScoreWithUnknownVar(analMean, skRand));
-        Prints.summaryValuesLn(2, "unnamedMetric1 Value(): " + unnamedMetric1Value(analMean, analVar, skRand));
-        Prints.summaryValuesLn(2, "unnamedMetric2 Value(): " + unnamedMetric2Value(analMean, analVar, skRand));
+        meanTestWithKnownVar(skRand);
+        meanTestWithUnknownVar(skRand);
+        Prints.summaryValuesLn(2, "unnamedVarianceMetric1 value: " + unnamedMetric1Value(analMean, analVar, skRand));
+        Prints.summaryValuesLn(2, "unnamedVariance2 value: " + unnamedMetric2Value(analMean, analVar, skRand));
         Prints.summaryValuesLn(2, "---------------");
-        
 
     }
 
@@ -188,8 +213,8 @@ public abstract class RandomLaw {
      * proportion of sample being under that threshold
      * @param sampleSize sample size
      * @param probType2Err the probability of likelihood of sample according to
-     * analytics, under which we reject the hypothesis that analytic
-     * evaluations are correct
+     * analytics, under which we reject the hypothesis that analytic evaluations
+     * are correct
      * @return true if, for every threshold, null hypothesis is accepted.
      */
     public boolean compareAnalyticCumulativeToSample(double[] ends, int sampleSize, double probType2Err) {
@@ -255,37 +280,37 @@ public abstract class RandomLaw {
      */
     private double proportionTest(double end, double[] sample) {
         int sampleSize = sample.length;
-        int inferCount = 0;
+        int inferiorCount = 0;
         for (int i = 0; i < sampleSize; i++) {
             if (Small.leqThan(sample[i], end)) {
-                inferCount++;
+                inferiorCount++;
             }
         }
 
-        double sampleProp = inferCount / (double) sampleSize;
+        double sampleProp = inferiorCount / (double) sampleSize;
         double analEsp = cumulative(end);
         //double analVar = analEsp * (1 - analEsp);
 
         Prints.cumulHypoLn(3, "Expectation: E[S]= " + sampleSize * analEsp);
         Prints.cumulHypo(3, "Sample results: ");
-        Prints.cumulHypoLn(3, "S = " + inferCount);
+        Prints.cumulHypoLn(3, "S = " + inferiorCount);
         //Prints.cumulHypoLn(3, "S/n = "+sampleProp);
 
         //in case of no differnce between analytic mean and sample mean
         if (analEsp == sampleProp) {
 
-            Prints.cumulHypoLn(3, "S = " + inferCount);
+            Prints.cumulHypoLn(3, "S = " + inferiorCount);
             return 0.5;
         }
         Binomial bin = new Binomial(sampleSize, analEsp);
 
-        double binCumulative = bin.cumulative(inferCount);
+        double binCumulative = bin.cumulative(inferiorCount);
         boolean sampleUnderAverage = sampleProp < analEsp;
         double binFurtherFromAverage = (sampleUnderAverage) ? binCumulative : 1 - binCumulative;
         if (sampleUnderAverage) {
-            Prints.cumulHypoLn(3, "P(S<=" + inferCount + ")= " + binFurtherFromAverage);
+            Prints.cumulHypoLn(3, "P(S<=" + inferiorCount + ")= " + binFurtherFromAverage);
         } else {
-            Prints.cumulHypoLn(3, "P(S>=" + inferCount + ")= " + binFurtherFromAverage);
+            Prints.cumulHypoLn(3, "P(S>=" + inferiorCount + ")= " + binFurtherFromAverage);
         }
 
         /*
@@ -301,29 +326,31 @@ public abstract class RandomLaw {
     }
 
     /**
-     * Returns the z-score (analytic mean - sample mean) /sqrt(analytic variance/sampleSize)
+     * Returns the z-score (normal distribution): (analytic mean - sample mean)
+     * /sqrt(analytic variance/sampleSize)
      *
      * @param analMean
      * @param analVar
      * @param rans
      * @return
      */
-    public final static double zScoreWithKnownVar(double analMean, double analVar, SampleStatSummary rans) {
+    public final static double zValue(double analMean, double analVar, SampleStatSummary rans) {
         double ans = (rans.espX(1) - analMean);
         ans *= Math.sqrt(rans.sampleSize / analVar);
         return ans;
     }
-    
+
     /**
-     * Returns the z-score (analytic mean - sample mean) /sqrt(sample variance/sampleSize)
-     * 
-     * Warning: for small samples, Student should be used, but not implemented yet, so this fct is faulty
+     * Returns the t-score (Student distribution): (analytic mean - sample mean)
+     * /sqrt(sample variance/sampleSize)
+     *
+     *
      * @param analMean
      * @param analVar
      * @param rans
      * @return
      */
-    public final static double zScoreWithUnknownVar(double analMean, SampleStatSummary rans) {
+    public final static double tValue(double analMean, SampleStatSummary rans) {
         double ans = (rans.espX(1) - analMean);
         ans *= Math.sqrt(rans.sampleSize / rans.estSampVar());
         return ans;

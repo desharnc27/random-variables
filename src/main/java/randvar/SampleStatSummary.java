@@ -44,4 +44,9 @@ public class SampleStatSummary {
         double res = espX(4) - 4 * espX(3) * mu - espX(2) * espX(2) + 8 * espX(2) * momom - 4 * momom * momom;
         return res / this.sampleSize;
     }
+
+    @Override
+    public String toString() {
+        return "sampleSummary-" + sampleSize + "-" + Arrays.toString(this.moment);
+    }
 }
